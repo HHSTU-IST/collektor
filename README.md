@@ -19,8 +19,8 @@ Collektor 是一个现代化的文件收集器，基于 Vue3 + TypeScript + Vite
 
 - **前端框架**: Vue.js 3.5 (Composition API)
 - **编程语言**: TypeScript 5.7
-- **构建工具**: Vite 8.0
 - **状态管理**: Pinia 3.0
+- **构建工具**: Vite 8.0
 - **样式框架**: Tailwind CSS 4.0
 - **UI 组件**: 自定义组件 + Tailwind 工具类
 
@@ -28,7 +28,7 @@ Collektor 是一个现代化的文件收集器，基于 Vue3 + TypeScript + Vite
 
 ### 环境要求
 
-- Node.js 18.0 或更高版本
+- Node.js 22.0 或更高版本
 - npm 或 yarn 包管理器
 
 ### 安装依赖

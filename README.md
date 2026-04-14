@@ -1,5 +1,10 @@
 # Collektor
 
+![typescript](https://img.shields.io/badge/typescript-5.7+-blue.svg)
+![vue](https://img.shields.io/badge/vue-3.5+-brightgreen.svg)
+![pinia](https://img.shields.io/badge/pinia-3.0+-ff6b6b.svg)
+![vite](https://img.shields.io/badge/vite-8.0+-yellow.svg)
+![tailwind](https://img.shields.io/badge/tailwind-4.0+-38bdf8.svg)
 ![code size](https://img.shields.io/github/languages/code-size/ivaquero/collektor.svg)
 ![repo size](https://img.shields.io/github/repo-size/ivaquero/collektor.svg)
 

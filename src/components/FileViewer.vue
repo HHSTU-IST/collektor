@@ -1,0 +1,99 @@
+<template>
+  <div v-if="fileStore.selectedFile" class="w-full max-w-4xl mx-auto p-6">
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+      <div class="p-6 border-b border-gray-200">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-xl font-semibold text-gray-900">{{ fileStore.selectedFile.name }}</h2>
+            <p class="text-sm text-gray-500 mt-1">
+              大小: {{ formatFileSize(fileStore.selectedFile.size) }} •
+              类型: {{ fileStore.selectedFile.type || '文本文件' }} •
+              修改时间: {{ formatDate(fileStore.selectedFile.lastModified) }}
+            </p>
+          </div>
+          <button
+            @click="fileStore.selectedFile = null"
+            class="text-gray-400 hover:text-gray-600"
+          >
+            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="p-6">
+        <div class="mb-4">
+          <div class="flex items-center justify-between mb-2">
+            <h3 class="text-sm font-medium text-gray-900">文件内容</h3>
+            <div class="flex items-center space-x-2">
+              <button
+                @click="copyContent"
+                class="text-sm text-indigo-600 hover:text-indigo-900 font-medium"
+              >
+                复制内容
+              </button>
+              <button
+                v-if="collectionItem"
+                @click="markAsCollected"
+                class="text-sm text-green-600 hover:text-green-900 font-medium"
+                :disabled="collectionItem.status === 'collected'"
+              >
+                {{ collectionItem.status === 'collected' ? '已收集' : '标记为已收集' }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-gray-50 rounded-lg p-4 max-h-96 overflow-auto">
+          <pre class="text-sm text-gray-800 whitespace-pre-wrap font-mono">{{ fileStore.selectedFile.content }}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { computed } from 'vue'
+import { useFileStore } from '../stores/file'
+import { useCollectionStore } from '../stores/collection'
+
+const fileStore = useFileStore()
+const collectionStore = useCollectionStore()
+
+const collectionItem = computed(() => {
+  if (!fileStore.selectedFile) return null
+  return collectionStore.checkFileStatus(fileStore.selectedFile.name)
+})
+
+const formatFileSize = (bytes: number): string => {
+  if (bytes === 0) return '0 Bytes'
+  const k = 1024
+  const sizes = ['Bytes', 'KB', 'MB', 'GB']
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+}
+
+const formatDate = (date: Date): string => {
+  return date.toLocaleString('zh-CN')
+}
+
+const copyContent = async () => {
+  if (fileStore.selectedFile) {
+    try {
+      await navigator.clipboard.writeText(fileStore.selectedFile.content)
+      alert('内容已复制到剪贴板')
+    } catch (error) {
+      console.error('复制失败:', error)
+      alert('复制失败，请手动复制')
+    }
+  }
+}
+
+const markAsCollected = () => {
+  if (collectionItem.value) {
+    collectionStore.updateItemStatus(collectionItem.value.id, 'collected')
+    alert('已标记为已收集')
+  }
+}
+</script>

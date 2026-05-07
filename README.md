@@ -5,8 +5,8 @@
 ![pinia](https://img.shields.io/badge/pinia-3.0+-ff6b6b.svg)
 ![vite](https://img.shields.io/badge/vite-8.0+-yellow.svg)
 ![tailwind](https://img.shields.io/badge/tailwind-4.0+-38bdf8.svg)
-![code size](https://img.shields.io/github/languages/code-size/ivaquero/coolector.svg)
-![repo size](https://img.shields.io/github/repo-size/ivaquero/coolector.svg)
+![code size](https://img.shields.io/github/languages/code-size/HHSTU-IST/coolector.svg)
+![repo size](https://img.shields.io/github/repo-size/HHSTU-IST/coolector.svg)
 
 Coolector 是一个现代化的文件收集器，基于 Vue3 + TypeScript + Vite 构建。
 

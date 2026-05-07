@@ -48,18 +48,63 @@
         <div class="bg-gray-50 rounded-lg p-4 max-h-96 overflow-auto">
           <pre class="text-sm text-gray-800 whitespace-pre-wrap font-mono">{{ fileStore.selectedFile.content }}</pre>
         </div>
+
+        <div class="mt-6 border-t border-gray-200 pt-6">
+          <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div class="grid gap-3 sm:grid-cols-2 flex-1">
+              <div>
+                <label class="block text-xs font-medium text-gray-500 mb-1">Relay 地址</label>
+                <input
+                  v-model="relayUploadBaseUrl"
+                  type="url"
+                  class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                  placeholder="http://127.0.0.1:8787"
+                >
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-500 mb-1">房间 ID</label>
+                <input
+                  v-model="relayUploadRoomId"
+                  type="text"
+                  class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                  placeholder="demo-room"
+                >
+              </div>
+            </div>
+
+            <button
+              @click="uploadSelectedFileToRelay"
+              :disabled="isRelayUploading"
+              class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {{ isRelayUploading ? '上传中' : 'HTTP 上传到 Relay' }}
+            </button>
+          </div>
+
+          <p class="mt-3 text-sm text-gray-600">
+            通过标准 HTTP `POST` 把当前文件发送到 Relay Server，接收端长连接会自动收到这次上传。
+          </p>
+          <p v-if="relayUploadMessage" class="mt-2 text-sm" :class="relayUploadError ? 'text-red-600' : 'text-green-600'">
+            {{ relayUploadMessage }}
+          </p>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useFileStore } from '../stores/file'
 import { useCollectionStore } from '../stores/collection'
 
 const fileStore = useFileStore()
 const collectionStore = useCollectionStore()
+const relayUploadBaseUrl = ref(import.meta.env.VITE_RELAY_URL ?? 'http://127.0.0.1:8787')
+const relayUploadRoomId = ref('demo-room')
+const isRelayUploading = ref(false)
+const relayUploadMessage = ref('')
+const relayUploadError = ref(false)
 
 const collectionItem = computed(() => {
   if (!fileStore.selectedFile) return null
@@ -76,6 +121,55 @@ const formatFileSize = (bytes: number): string => {
 
 const formatDate = (date: Date): string => {
   return date.toLocaleString('zh-CN')
+}
+
+const normalizeRelayUrl = (value: string) => value.trim().replace(/\/+$/, '')
+
+const uploadSelectedFileToRelay = async () => {
+  if (!fileStore.selectedFile) {
+    relayUploadError.value = true
+    relayUploadMessage.value = '请先选择一个文件'
+    return
+  }
+
+  const baseUrl = normalizeRelayUrl(relayUploadBaseUrl.value)
+  const targetRoomId = relayUploadRoomId.value.trim()
+
+  if (!targetRoomId) {
+    relayUploadError.value = true
+    relayUploadMessage.value = '房间 ID 不能为空'
+    return
+  }
+
+  try {
+    isRelayUploading.value = true
+    relayUploadError.value = false
+    relayUploadMessage.value = '正在通过 HTTP 上传到 Relay...'
+
+    const selectedFile = fileStore.selectedFile
+    const response = await fetch(`${baseUrl}/api/rooms/${encodeURIComponent(targetRoomId)}/uploads`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': selectedFile.type || 'text/plain',
+        'X-Relay-Filename': selectedFile.name,
+        'X-Relay-Mime-Type': selectedFile.type || 'text/plain',
+        'X-Relay-Last-Modified': selectedFile.lastModified.toISOString()
+      },
+      body: selectedFile.content
+    })
+
+    const payload = await response.json().catch(() => null)
+    if (!response.ok) {
+      throw new Error(payload?.error ?? 'HTTP 上传失败')
+    }
+
+    relayUploadMessage.value = `已发送到房间 ${targetRoomId}`
+  } catch (error) {
+    relayUploadError.value = true
+    relayUploadMessage.value = error instanceof Error ? error.message : 'HTTP 上传失败'
+  } finally {
+    isRelayUploading.value = false
+  }
 }
 
 const copyContent = async () => {

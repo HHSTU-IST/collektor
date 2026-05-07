@@ -140,6 +140,8 @@ interface RelayUploadSummary {
   lastModified: string
   hasTextPreview: boolean
   previewText: string | null
+  contentText: string | null
+  contentBase64: string
   downloadUrl: string
 }
 
@@ -289,12 +291,20 @@ const handleReceiverReady = (event: MessageEvent<string>) => {
   void refreshRoomState()
 }
 
-const fetchRemoteText = async (downloadUrl: string) => {
-  const response = await fetch(`${downloadUrl}${downloadUrl.includes('?') ? '&' : '?'}download=1`)
-  if (!response.ok) {
-    throw new Error(await response.text())
+const decodeRelayContent = (upload: RelayUploadSummary) => {
+  if (upload.contentText !== null) {
+    return upload.contentText
   }
-  return response.text()
+
+  if (upload.contentBase64) {
+    try {
+      return atob(upload.contentBase64)
+    } catch {
+      return ''
+    }
+  }
+
+  return upload.previewText ?? ''
 }
 
 const handleUploadCreated = async (event: MessageEvent<string>) => {
@@ -302,7 +312,7 @@ const handleUploadCreated = async (event: MessageEvent<string>) => {
   const upload = payload.data.upload
 
   try {
-    const content = await fetchRemoteText(upload.downloadUrl)
+    const content = decodeRelayContent(upload)
     const file = fileStore.upsertRelayFile({
       name: upload.name,
       content,
@@ -323,8 +333,8 @@ const handleUploadCreated = async (event: MessageEvent<string>) => {
       fileStore.selectFile(file)
     }
 
-    pushEventLog(payload.type, `已接收 ${upload.name}`, payload.createdAt)
-    statusMessage.value = `已接收文件：${upload.name}`
+    pushEventLog(payload.type, `已内存转发 ${upload.name}`, payload.createdAt)
+    statusMessage.value = `已内存转发文件：${upload.name}`
     void refreshRoomState()
   } catch (error) {
     const fallbackContent = upload.previewText ?? ''
@@ -348,8 +358,8 @@ const handleUploadCreated = async (event: MessageEvent<string>) => {
       fileStore.selectFile(file)
     }
 
-    pushEventLog(payload.type, `接收成功，但文件内容拉取失败：${upload.name}`, payload.createdAt)
-    statusMessage.value = error instanceof Error ? error.message : '文件内容拉取失败'
+    pushEventLog(payload.type, `接收成功，但内存内容不可用：${upload.name}`, payload.createdAt)
+    statusMessage.value = error instanceof Error ? error.message : '内存内容不可用'
     void refreshRoomState()
   }
 }

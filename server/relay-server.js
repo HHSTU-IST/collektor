@@ -89,6 +89,8 @@ function uploadSummary(upload, req) {
     lastModified: upload.lastModified,
     hasTextPreview: Boolean(upload.previewText),
     previewText: upload.previewText ?? null,
+    contentText: upload.text ?? null,
+    contentBase64: upload.contentBase64,
     downloadUrl: `${baseUrl(req)}/api/rooms/${upload.roomId}/uploads/${upload.id}`
   }
 
@@ -316,14 +318,15 @@ async function handleUpload(req, res, room, query) {
   room.updatedAt = upload.uploadedAt
   room.lastActivity = Date.now()
 
+  const uploadPayload = uploadSummary(upload, req)
   const event = dispatchEvent(room, 'upload.created', {
     roomId: room.id,
-    upload: uploadSummary(upload, req),
+    upload: uploadPayload,
     downloadUrl: `${baseUrl(req)}/api/rooms/${room.id}/uploads/${upload.id}`
   })
 
   return writeJson(res, 201, {
-    upload: uploadSummary(upload, req),
+    upload: uploadPayload,
     eventId: event.id
   })
 }

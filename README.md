@@ -114,8 +114,8 @@ src/
 
 - [x] 公网 Relay Server
 - [x] Receiver 长连接
-- [ ] HTTP 普通上传
-- [ ] Relay 内存转发。
+- [x] HTTP 上传
+- [x] Relay 内存转发
 
 ## 使用说明
 

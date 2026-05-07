@@ -33,8 +33,8 @@ Coolector 是一个现代化的文件收集器，基于 Vue3 + TypeScript + Vite
 
 ### 环境要求
 
-- Node.js 22.0 或更高版本
-- pnpm 包管理器
+- Node.js >=22.0
+- pnpm >= 11.0
 
 ### 安装依赖
 

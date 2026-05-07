@@ -1,12 +1,8 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
 import FileUploader from './components/FileUploader.vue'
 import CollectionStatus from './components/CollectionStatus.vue'
 import FileViewer from './components/FileViewer.vue'
-
-onMounted(() => {
-  // 初始化应用
-})
+import RelayReceiver from './components/RelayReceiver.vue'
 </script>
 
 <template>
@@ -43,6 +39,7 @@ onMounted(() => {
           </p>
         </div>
 
+        <RelayReceiver />
         <FileUploader />
         <CollectionStatus />
         <FileViewer />

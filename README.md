@@ -113,7 +113,7 @@ src/
 ## 跨公网传输
 
 - [x] 公网 Relay Server
-- [ ] Receiver 长连接
+- [x] Receiver 长连接
 - [ ] HTTP 普通上传
 - [ ] Relay 内存转发。
 

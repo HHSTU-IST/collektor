@@ -1,14 +1,14 @@
-# Collektor
+# Coolector
 
 ![typescript](https://img.shields.io/badge/typescript-5.7+-blue.svg)
 ![vue](https://img.shields.io/badge/vue-3.5+-brightgreen.svg)
 ![pinia](https://img.shields.io/badge/pinia-3.0+-ff6b6b.svg)
 ![vite](https://img.shields.io/badge/vite-8.0+-yellow.svg)
 ![tailwind](https://img.shields.io/badge/tailwind-4.0+-38bdf8.svg)
-![code size](https://img.shields.io/github/languages/code-size/ivaquero/collektor.svg)
-![repo size](https://img.shields.io/github/repo-size/ivaquero/collektor.svg)
+![code size](https://img.shields.io/github/languages/code-size/ivaquero/coolector.svg)
+![repo size](https://img.shields.io/github/repo-size/ivaquero/coolector.svg)
 
-Collektor 是一个现代化的文件收集器，基于 Vue3 + TypeScript + Vite 构建。
+Coolector 是一个现代化的文件收集器，基于 Vue3 + TypeScript + Vite 构建。
 
 ## 主要功能
 
@@ -64,6 +64,14 @@ npm run build
 npm run preview
 ```
 
+### 启动 Relay Server
+
+```bash
+npm run relay
+```
+
+默认监听 `http://localhost:8787`
+
 ## 项目结构
 
 ```text
@@ -85,24 +93,29 @@ src/
 
 ### 文件上传
 
-- 支持拖拽上传和点击上传
-- 支持多文件同时上传
-- 自动读取文本文件内容
-- 显示文件大小、类型等信息
+- [x] 支持拖拽上传和点击上传
+- [x] 支持多文件同时上传
+- [x] 显示文件大小、类型等信息
 
 ### 收集名单管理
 
-- 上传包含文件名的列表文件
-- 实时跟踪收集进度
-- 状态标记：待收集、已收集、错误
-- 可视化进度条显示
+- [x] 上传包含文件名的列表文件
+- [x] 实时跟踪收集进度
+- [x] 状态标记：待收集、已收集、错误
+- [x] 可视化进度条显示
 
 ### 文件预览
 
-- 查看上传文件的内容
-- 支持复制文件内容到剪贴板
-- 标记文件为已收集状态
-- 显示文件详细信息
+- [x] 查看上传文件的内容
+- [x] 标记文件为已收集状态
+- [x] 显示文件详细信息
+
+## 跨公网传输
+
+- [x] 公网 Relay Server
+- [ ] Receiver 长连接
+- [ ] HTTP 普通上传
+- [ ] Relay 内存转发。
 
 ## 使用说明
 

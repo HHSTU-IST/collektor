@@ -34,18 +34,18 @@ Coolector 是一个现代化的文件收集器，基于 Vue3 + TypeScript + Vite
 ### 环境要求
 
 - Node.js 22.0 或更高版本
-- npm 或 yarn 包管理器
+- pnpm 包管理器
 
 ### 安装依赖
 
 ```bash
-npm install
+pnpm install
 ```
 
 ### 开发服务器
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 应用将在 <http://localhost:5174> 启动
@@ -53,7 +53,7 @@ npm run dev
 ### 构建项目
 
 ```bash
-npm run build
+pnpm run build
 ```
 
 构建产物将输出到 `dist/` 目录
@@ -61,13 +61,13 @@ npm run build
 ### 预览构建结果
 
 ```bash
-npm run preview
+pnpm run preview
 ```
 
 ### 启动 Relay Server
 
 ```bash
-npm run relay
+pnpm run relay
 ```
 
 默认监听 `http://localhost:8787`
